@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,12 +19,46 @@ const AmmoniaCalculator = () => {
   const [isCalculated, setIsCalculated] = useState(false);
   const printTemplateRef = useRef<HTMLDivElement>(null);
 
+  const numberFormatter = new Intl.NumberFormat('en-US', {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2
+  });
+
+  const parseNumberInput = (value: string): number => {
+    return parseFloat(value.replace(/[^\d.-]/g, ''));
+  };
+
+  const handleTankVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    const numericValue = parseNumberInput(rawValue);
+    
+    const formattedValue = isNaN(numericValue) 
+      ? '' 
+      : numberFormatter.format(numericValue);
+    
+    setTankVolume(formattedValue);
+  };
+
+  const handleTanConcentrationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    const numericValue = parseNumberInput(rawValue);
+    
+    const formattedValue = isNaN(numericValue) 
+      ? '' 
+      : numberFormatter.format(numericValue);
+    
+    setTanConcentration(formattedValue);
+  };
+
   const validateInputs = (): boolean => {
-    if (!tankVolume || isNaN(Number(tankVolume)) || Number(tankVolume) <= 0) {
+    const parsedTankVolume = parseNumberInput(tankVolume);
+    const parsedTanConcentration = parseNumberInput(tanConcentration);
+
+    if (!parsedTankVolume || parsedTankVolume <= 0) {
       toast.error("Please enter a valid tank volume (must be greater than 0)");
       return false;
     }
-    if (!tanConcentration || isNaN(Number(tanConcentration)) || Number(tanConcentration) <= 0) {
+    if (!parsedTanConcentration || parsedTanConcentration <= 0) {
       toast.error("Please enter a valid TAN concentration (must be greater than 0)");
       return false;
     }
@@ -34,15 +67,16 @@ const AmmoniaCalculator = () => {
 
   const calculateCarbonNeeded = () => {
     if (!validateInputs()) return;
+    
+    const volume = parseNumberInput(tankVolume);
+    const tan = parseNumberInput(tanConcentration);
+    
     const selectedCarbonSource = carbonSources.find(source => source.name === selectedSource);
     if (!selectedCarbonSource) {
       toast.error("Please select a carbon source");
       return;
     }
 
-    // Organic Carbon Needed (grams) = (Tank volume in liters) × (TAN in ppm) × 6 × (% Available Carbon from chosen source) ÷ 1000
-    const volume = parseFloat(tankVolume);
-    const tan = parseFloat(tanConcentration);
     const availableCarbon = selectedCarbonSource.availableCarbon;
 
     // Calculate base formula result (without dividing by available carbon)
@@ -53,6 +87,23 @@ const AmmoniaCalculator = () => {
     setResult(carbonNeeded);
     setIsCalculated(true);
     toast.success("Calculation completed!");
+  };
+
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+      // Display in tons if over 1000 kg (1,000,000 grams)
+      return `${numberFormatter.format(num / 1000000)} tons`;
+    } else if (num >= 1000) {
+      // Display in kg if over 1000 grams
+      return `${numberFormatter.format(num / 1000)} kg`;
+    } else {
+      // Display in grams for smaller amounts
+      return `${numberFormatter.format(num)} grams`;
+    }
+  };
+
+  const getSelectedCarbonSource = () => {
+    return carbonSources.find(source => source.name === selectedSource);
   };
 
   const handlePrint = () => {
@@ -79,23 +130,6 @@ const AmmoniaCalculator = () => {
     setSelectedSource(carbonSources[0].name);
     setResult(null);
     setIsCalculated(false);
-  };
-
-  const formatNumber = (num: number): string => {
-    if (num >= 1000000) {
-      // Display in tons if over 1000 kg (1,000,000 grams)
-      return `${(num / 1000000).toFixed(2)} tons`;
-    } else if (num >= 1000) {
-      // Display in kg if over 1000 grams
-      return `${(num / 1000).toFixed(2)} kg`;
-    } else {
-      // Display in grams for smaller amounts
-      return `${num.toFixed(2)} grams`;
-    }
-  };
-
-  const getSelectedCarbonSource = () => {
-    return carbonSources.find(source => source.name === selectedSource);
   };
 
   return (
@@ -128,7 +162,14 @@ const AmmoniaCalculator = () => {
                 <Droplets className="mr-2 h-4 w-4 text-vismar-blue" />
                 <Label htmlFor="tankVolume" className="text-base">Tank/Pond Volume (Liters)</Label>
               </div>
-              <Input id="tankVolume" placeholder="Enter tank volume" value={tankVolume} onChange={e => setTankVolume(e.target.value)} className="border-vismar-blue/30 focus:border-vismar-blue" type="number" min="0" />
+              <Input 
+                id="tankVolume" 
+                placeholder="Enter tank volume" 
+                value={tankVolume} 
+                onChange={handleTankVolumeChange} 
+                className="border-vismar-blue/30 focus:border-vismar-blue" 
+                type="text" 
+              />
             </div>
 
             <div className="space-y-2">
@@ -136,7 +177,14 @@ const AmmoniaCalculator = () => {
                 <FlaskConical className="mr-2 h-4 w-4 text-vismar-green" />
                 <Label htmlFor="tanConcentration" className="text-base">TAN Concentration (ppm)</Label>
               </div>
-              <Input id="tanConcentration" placeholder="Enter TAN concentration" value={tanConcentration} onChange={e => setTanConcentration(e.target.value)} className="border-vismar-green/30 focus:border-vismar-green" type="number" min="0" step="0.01" />
+              <Input 
+                id="tanConcentration" 
+                placeholder="Enter TAN concentration" 
+                value={tanConcentration} 
+                onChange={handleTanConcentrationChange} 
+                className="border-vismar-green/30 focus:border-vismar-green" 
+                type="text" 
+              />
             </div>
           </div>
 
@@ -207,7 +255,6 @@ const AmmoniaCalculator = () => {
         </CardFooter>
       </Card>
 
-      {/* Hidden printable template */}
       <div className="hidden">
         <PrintableTemplate 
           tankVolume={tankVolume}
