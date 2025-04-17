@@ -82,7 +82,16 @@ const AmmoniaCalculator = () => {
   };
 
   const formatNumber = (num: number): string => {
-    return num.toFixed(2);
+    if (num >= 1000000) {
+      // Display in tons if over 1000 kg (1,000,000 grams)
+      return `${(num / 1000000).toFixed(2)} tons`;
+    } else if (num >= 1000) {
+      // Display in kg if over 1000 grams
+      return `${(num / 1000).toFixed(2)} kg`;
+    } else {
+      // Display in grams for smaller amounts
+      return `${num.toFixed(2)} grams`;
+    }
   };
 
   const getSelectedCarbonSource = () => {
@@ -163,7 +172,7 @@ const AmmoniaCalculator = () => {
                 <div><strong>Carbon Source:</strong> {selectedSource}</div>
                 <div><strong>Available Carbon:</strong> {(getSelectedCarbonSource()?.availableCarbon || 0) * 100}%</div>
                 <div className="text-xl font-bold text-vismar-blue">
-                  <strong>Carbon Source Needed:</strong> {formatNumber(result)} grams
+                  <strong>Carbon Source Needed:</strong> {formatNumber(result)}
                 </div>
               </AlertDescription>
             </Alert>

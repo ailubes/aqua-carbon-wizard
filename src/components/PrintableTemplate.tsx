@@ -30,11 +30,18 @@ const PrintableTemplate = ({
           <h2 className="text-xl text-vismar-green">Calculation Results</h2>
         </div>
         <div className="flex flex-col items-end">
-          <img 
-            src="/lovable-uploads/98e047df-7587-4527-9e1f-c529103e2a20.png" 
-            alt="Vismar Aqua Logo" 
-            className="h-20 w-auto mb-2" 
-          />
+          <a 
+            href="https://www.vismar-aqua.com" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="hover:opacity-80 transition-opacity"
+          >
+            <img 
+              src="/lovable-uploads/98e047df-7587-4527-9e1f-c529103e2a20.png" 
+              alt="Vismar Aqua Logo" 
+              className="h-20 w-auto mb-2" 
+            />
+          </a>
           <a href="https://www.vismar-aqua.com" className="text-vismar-blue hover:underline">www.vismar-aqua.com</a>
         </div>
       </div>
@@ -61,7 +68,7 @@ const PrintableTemplate = ({
         <h3 className="text-xl font-bold mb-2 text-center">Calculation Result</h3>
         <div className="text-center">
           <div className="text-3xl font-bold text-vismar-blue">
-            {result !== null ? `${formatNumber(result)} grams` : "Not calculated"}
+            {result !== null ? formatNumber(result) : "Not calculated"}
           </div>
           <div className="text-gray-600 mt-1">of {selectedSource} needed</div>
         </div>
