@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,17 +22,20 @@ const AmmoniaCalculator = () => {
 
   const numberFormatter = new Intl.NumberFormat('en-US', {
     maximumFractionDigits: 2,
-    minimumFractionDigits: 2
+    minimumFractionDigits: 0
   });
 
   const parseNumberInput = (value: string): number => {
-    return parseFloat(value.replace(/[^\d.-]/g, ''));
+    // Remove all non-digit and non-decimal characters
+    const cleanedValue = value.replace(/[^\d.]/g, '');
+    return parseFloat(cleanedValue);
   };
 
   const handleTankVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const numericValue = parseNumberInput(rawValue);
     
+    // Handle different input scenarios
     const formattedValue = isNaN(numericValue) 
       ? '' 
       : numberFormatter.format(numericValue);
