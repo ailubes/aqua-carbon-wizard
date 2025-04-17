@@ -13,7 +13,17 @@ const Index = () => {
         <AmmoniaCalculator />
       </main>
       <footer className="w-full text-center p-4 text-gray-600 text-sm">
-        © {new Date().getFullYear()} Vismar Aqua - Aquaculture Solutions
+        <div>
+          © {new Date().getFullYear()} Vismar Aqua - Aquaculture Solutions | 
+          <a 
+            href="https://www.vismar-aqua.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-vismar-blue hover:underline ml-1"
+          >
+            www.vismar-aqua.com
+          </a>
+        </div>
       </footer>
     </div>
   );

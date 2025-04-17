@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,15 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { carbonSources } from "@/data/carbonSources";
-import { Calculator, Droplets, FlaskConical, Info } from "lucide-react";
+import { Calculator, Droplets, FlaskConical, Info, Printer } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
+import PrintableTemplate from "@/components/PrintableTemplate";
+
 const AmmoniaCalculator = () => {
   const [tankVolume, setTankVolume] = useState<string>("");
   const [tanConcentration, setTanConcentration] = useState<string>("");
   const [selectedSource, setSelectedSource] = useState<string>(carbonSources[0].name);
   const [result, setResult] = useState<number | null>(null);
   const [isCalculated, setIsCalculated] = useState(false);
+  const printTemplateRef = useRef<HTMLDivElement>(null);
+
   const validateInputs = (): boolean => {
     if (!tankVolume || isNaN(Number(tankVolume)) || Number(tankVolume) <= 0) {
       toast.error("Please enter a valid tank volume (must be greater than 0)");
@@ -26,6 +31,7 @@ const AmmoniaCalculator = () => {
     }
     return true;
   };
+
   const calculateCarbonNeeded = () => {
     if (!validateInputs()) return;
     const selectedCarbonSource = carbonSources.find(source => source.name === selectedSource);
@@ -48,6 +54,25 @@ const AmmoniaCalculator = () => {
     setIsCalculated(true);
     toast.success("Calculation completed!");
   };
+
+  const handlePrint = () => {
+    const printContent = document.getElementById('printable-template');
+    const originalBody = document.body.innerHTML;
+    
+    if (printContent) {
+      document.body.innerHTML = printContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalBody;
+      
+      // Reattach event listeners after printing
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    } else {
+      toast.error("Print template not found");
+    }
+  };
+  
   const resetForm = () => {
     setTankVolume("");
     setTanConcentration("");
@@ -55,13 +80,17 @@ const AmmoniaCalculator = () => {
     setResult(null);
     setIsCalculated(false);
   };
+
   const formatNumber = (num: number): string => {
     return num.toFixed(2);
   };
+
   const getSelectedCarbonSource = () => {
     return carbonSources.find(source => source.name === selectedSource);
   };
-  return <div className="w-full max-w-3xl mx-auto p-4">
+
+  return (
+    <div className="w-full max-w-3xl mx-auto p-4">
       <Card className="border-2 border-vismar-green/20">
         <CardHeader className="bg-gradient-to-r from-vismar-green/10 to-vismar-blue/10">
           <div className="flex items-center justify-between">
@@ -69,7 +98,18 @@ const AmmoniaCalculator = () => {
               <CardTitle className="text-2xl font-bold text-vismar-blue">Ammonia Reduction Calculator</CardTitle>
               <CardDescription>Calculate organic carbon needed to reduce ammonia (TAN) levels</CardDescription>
             </div>
-            <img src="/lovable-uploads/98e047df-7587-4527-9e1f-c529103e2a20.png" alt="Vismar Aqua Logo" className="h-16 w-auto" />
+            <a 
+              href="https://www.vismar-aqua.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:opacity-80 transition-opacity"
+            >
+              <img 
+                src="/lovable-uploads/98e047df-7587-4527-9e1f-c529103e2a20.png" 
+                alt="Vismar Aqua Logo" 
+                className="h-16 w-auto" 
+              />
+            </a>
           </div>
         </CardHeader>
         <CardContent className="pt-6 space-y-6">
@@ -115,7 +155,8 @@ const AmmoniaCalculator = () => {
           </div>
         </CardContent>
 
-        {isCalculated && result !== null && <div className="px-6 pb-6">
+        {isCalculated && result !== null && (
+          <div className="px-6 pb-6">
             <Alert className="bg-gradient-to-r from-vismar-green/20 to-vismar-blue/20 border border-vismar-green/50">
               <div className="text-lg font-medium mb-2">Results:</div>
               <AlertDescription className="text-base space-y-2">
@@ -126,7 +167,13 @@ const AmmoniaCalculator = () => {
                 </div>
               </AlertDescription>
             </Alert>
-          </div>}
+            <div className="mt-4 flex justify-end">
+              <Button onClick={handlePrint} variant="outline" className="border-vismar-blue text-vismar-blue hover:bg-vismar-blue/10">
+                <Printer className="mr-2 h-4 w-4" /> Print Results
+              </Button>
+            </div>
+          </div>
+        )}
 
         <CardFooter className="flex flex-col space-y-2 bg-gray-50 rounded-b-lg">
           <Accordion type="single" collapsible className="w-full">
@@ -150,6 +197,20 @@ const AmmoniaCalculator = () => {
           </Accordion>
         </CardFooter>
       </Card>
-    </div>;
+
+      {/* Hidden printable template */}
+      <div className="hidden">
+        <PrintableTemplate 
+          tankVolume={tankVolume}
+          tanConcentration={tanConcentration}
+          selectedSource={selectedSource}
+          result={result}
+          getSelectedCarbonSource={getSelectedCarbonSource}
+          formatNumber={formatNumber}
+        />
+      </div>
+    </div>
+  );
 };
+
 export default AmmoniaCalculator;
