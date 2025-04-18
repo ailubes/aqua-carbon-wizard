@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -8,9 +7,13 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { plStages } from "@/data/plStages";
 import { geneticLines } from "@/data/geneticLines";
 import { useGrowth } from "@/contexts/GrowthContext";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const GrowthCalculator = () => {
   const { setProjectedWeight } = useGrowth();
+  const navigate = useNavigate();
   const [plStage, setPlStage] = React.useState('');
   const [days, setDays] = React.useState(0);
   const [geneticLine, setGeneticLine] = React.useState('');
@@ -54,6 +57,10 @@ const GrowthCalculator = () => {
       });
     }
     return data;
+  };
+
+  const handleUseFeedManagement = () => {
+    navigate('/feed');
   };
 
   return (
@@ -116,6 +123,16 @@ const GrowthCalculator = () => {
             Expected weight after {formatNumber(days)} days
           </p>
         </div>
+
+        {finalWeight > 0 && (
+          <Button
+            onClick={handleUseFeedManagement}
+            className="mt-4 w-full md:w-auto"
+          >
+            Use in Feed Management
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        )}
 
         {days > 0 && finalWeight > 0 && (
           <div className="mt-6 h-[300px]">
