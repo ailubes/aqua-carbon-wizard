@@ -3,50 +3,54 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-interface GrowthCalculation {
-  initialWeight: number;
-  days: number;
-  adg: number;
-  finalWeight: number;
-}
+import { plStages } from "@/data/plStages";
+import { geneticLines } from "@/data/geneticLines";
+import { useGrowth } from "@/contexts/GrowthContext";
 
 const GrowthCalculator = () => {
-  const [calculation, setCalculation] = React.useState<GrowthCalculation>({
-    initialWeight: 0,
-    days: 0,
-    adg: 0,
-    finalWeight: 0,
-  });
+  const { setProjectedWeight } = useGrowth();
+  const [plStage, setPlStage] = React.useState('');
+  const [days, setDays] = React.useState(0);
+  const [geneticLine, setGeneticLine] = React.useState('');
+  const [finalWeight, setFinalWeight] = React.useState(0);
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US', {
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 3,
       minimumFractionDigits: 0,
     }).format(num);
   };
 
-  const handleInputChange = (field: keyof GrowthCalculation, value: string) => {
-    const numValue = parseFloat(value.replace(/,/g, '')) || 0;
-    const newCalculation = { ...calculation, [field]: numValue };
-    newCalculation.finalWeight = newCalculation.initialWeight + (newCalculation.days * newCalculation.adg);
-    setCalculation(newCalculation);
-  };
+  React.useEffect(() => {
+    const selectedPL = plStages.find(pl => pl.stage === plStage);
+    const selectedLine = geneticLines.find(line => line.name === geneticLine);
+    
+    if (selectedPL && selectedLine && days > 0) {
+      const projectedWeight = selectedPL.weight + (days * selectedLine.avgAdg);
+      setFinalWeight(projectedWeight);
+      setProjectedWeight(projectedWeight);
+    }
+  }, [plStage, days, geneticLine, setProjectedWeight]);
 
   const generateGrowthData = () => {
+    const selectedPL = plStages.find(pl => pl.stage === plStage);
+    const selectedLine = geneticLines.find(line => line.name === geneticLine);
+    
+    if (!selectedPL || !selectedLine) return [];
+
     const data = [];
-    for (let day = 0; day <= calculation.days; day += Math.max(1, Math.floor(calculation.days / 10))) {
+    for (let day = 0; day <= days; day += Math.max(1, Math.floor(days / 10))) {
       data.push({
         day,
-        weight: calculation.initialWeight + (day * calculation.adg)
+        weight: selectedPL.weight + (day * selectedLine.avgAdg)
       });
     }
-    // Always include the final day
-    if (calculation.days > 0 && data[data.length - 1].day !== calculation.days) {
+    if (days > 0 && data[data.length - 1].day !== days) {
       data.push({
-        day: calculation.days,
-        weight: calculation.finalWeight
+        day: days,
+        weight: finalWeight
       });
     }
     return data;
@@ -60,46 +64,60 @@ const GrowthCalculator = () => {
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="initialWeight">Initial Weight (g)</Label>
-            <Input
-              id="initialWeight"
-              type="text"
-              value={calculation.initialWeight > 0 ? formatNumber(calculation.initialWeight) : ''}
-              onChange={(e) => handleInputChange('initialWeight', e.target.value)}
-              placeholder="Enter initial weight"
-            />
+            <Label>PL Stage</Label>
+            <Select onValueChange={setPlStage} value={plStage}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select PL stage" />
+              </SelectTrigger>
+              <SelectContent>
+                {plStages.map((pl) => (
+                  <SelectItem key={pl.stage} value={pl.stage}>
+                    {pl.stage} ({pl.age} days, {formatNumber(pl.weight)}g)
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
+
           <div className="space-y-2">
             <Label htmlFor="days">Days of Culture</Label>
             <Input
               id="days"
               type="text"
-              value={calculation.days > 0 ? formatNumber(calculation.days) : ''}
-              onChange={(e) => handleInputChange('days', e.target.value)}
+              value={days > 0 ? formatNumber(days) : ''}
+              onChange={(e) => setDays(parseFloat(e.target.value.replace(/,/g, '')) || 0)}
               placeholder="Enter days"
             />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="adg">ADG (g/day)</Label>
-            <Input
-              id="adg"
-              type="text"
-              value={calculation.adg > 0 ? formatNumber(calculation.adg) : ''}
-              onChange={(e) => handleInputChange('adg', e.target.value)}
-              placeholder="Enter ADG"
-            />
+            <Label>Genetic Line</Label>
+            <Select onValueChange={setGeneticLine} value={geneticLine}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select genetic line" />
+              </SelectTrigger>
+              <SelectContent>
+                {geneticLines.map((line) => (
+                  <SelectItem key={line.name} value={line.name}>
+                    {line.name} (ADG: {line.adgRange})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
         <div className="mt-6 p-4 bg-gradient-to-r from-vismar-green/10 to-vismar-blue/10 rounded-lg">
           <h3 className="text-lg font-semibold text-vismar-blue mb-2">Projected Final Weight</h3>
           <p className="text-2xl font-bold text-vismar-blue">
-            {formatNumber(calculation.finalWeight)} g
+            {formatNumber(finalWeight)} g
           </p>
-          <p className="text-sm text-gray-600 mt-1">Expected weight after {formatNumber(calculation.days)} days</p>
+          <p className="text-sm text-gray-600 mt-1">
+            Expected weight after {formatNumber(days)} days
+          </p>
         </div>
 
-        {calculation.days > 0 && calculation.finalWeight > 0 && (
+        {days > 0 && finalWeight > 0 && (
           <div className="mt-6 h-[300px]">
             <h3 className="text-lg font-semibold text-vismar-blue mb-4">Growth Progression</h3>
             <ResponsiveContainer width="100%" height="100%">

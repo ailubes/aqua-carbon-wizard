@@ -3,21 +3,15 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-
-interface PondSize {
-  length: number;
-  width: number;
-  area: number;
-}
+import { useGrowth } from "@/contexts/GrowthContext";
 
 const PondSizeCalculator = () => {
-  const [dimensions, setDimensions] = React.useState<PondSize>({
+  const { setPondSize } = useGrowth();
+  const [dimensions, setDimensions] = React.useState({
     length: 0,
     width: 0,
     area: 0,
   });
-  const { toast } = useToast();
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -26,15 +20,12 @@ const PondSizeCalculator = () => {
     }).format(num);
   };
 
-  const handleInputChange = (field: keyof PondSize, value: string) => {
+  const handleInputChange = (field: 'length' | 'width', value: string) => {
     const numValue = parseFloat(value.replace(/,/g, '')) || 0;
     const newDimensions = { ...dimensions, [field]: numValue };
     newDimensions.area = newDimensions.length * newDimensions.width;
     setDimensions(newDimensions);
-  };
-
-  const handlePrint = () => {
-    window.print();
+    setPondSize(newDimensions.area);
   };
 
   return (
@@ -73,13 +64,6 @@ const PondSizeCalculator = () => {
           </p>
           <p className="text-sm text-gray-600 mt-1">Total Pond Area</p>
         </div>
-
-        <button
-          onClick={handlePrint}
-          className="mt-4 print:hidden px-4 py-2 bg-vismar-blue text-white rounded-md hover:bg-vismar-dark-blue transition-colors"
-        >
-          Print Results
-        </button>
       </CardContent>
     </Card>
   );
