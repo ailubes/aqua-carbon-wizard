@@ -24,9 +24,13 @@ const FeedContext = createContext<FeedContextType>({
 });
 
 export const FeedProvider = ({ children }: { children: React.ReactNode }) => {
-  const [totalBiomass, setTotalBiomass] = useState(0);
+  // Get initial biomass from URL state if available
+  const initialBiomass = window.history.state?.usr?.biomass || 0;
+  const initialFeedingPeriod = window.history.state?.usr?.feedingPeriod || 0;
+
+  const [totalBiomass, setTotalBiomass] = useState(initialBiomass);
   const [fcr, setFcr] = useState(1.2);
-  const [feedingPeriod, setFeedingPeriod] = useState(0);
+  const [feedingPeriod, setFeedingPeriod] = useState(initialFeedingPeriod);
   const [totalFeedRequired, setTotalFeedRequired] = useState(0);
 
   return (
