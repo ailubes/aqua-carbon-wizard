@@ -29,6 +29,12 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const navItems: NavItem[] = [
     {
+      name: "Water Quality",
+      path: "/water",
+      icon: Droplets,
+      active: location.pathname === "/water"
+    },
+    {
       name: "Ammonia Reduction",
       path: "/",
       icon: Droplets,
@@ -46,12 +52,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       path: "/feed",
       icon: Utensils,
       active: location.pathname === "/feed"
-    },
-    {
-      name: "Water Quality",
-      path: "/water",
-      icon: Droplets,
-      active: location.pathname === "/water"
     },
     {
       name: "Aeration & Environment",
