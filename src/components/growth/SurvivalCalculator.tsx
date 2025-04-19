@@ -4,8 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useGrowth } from "@/contexts/GrowthContext";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight, Printer } from "lucide-react";
 
 const SurvivalCalculator = () => {
+  const navigate = useNavigate();
   const { totalPL, projectedWeight } = useGrowth();
   const [harvestedTotal, setHarvestedTotal] = React.useState(0);
   const [finalCount, setFinalCount] = React.useState(0);
@@ -27,6 +31,20 @@ const SurvivalCalculator = () => {
       }
     }
   }, [harvestedTotal, projectedWeight, totalPL]);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleNext = () => {
+    // Navigate to feed management with initial data
+    navigate('/feed', {
+      state: {
+        biomass: harvestedTotal, // Pass the harvested total as initial biomass
+        feedingPeriod: 30, // Default feeding period
+      }
+    });
+  };
 
   return (
     <Card className="print:shadow-none">
@@ -71,6 +89,17 @@ const SurvivalCalculator = () => {
               </p>
               <p className="text-sm text-gray-600 mt-1">Percentage of surviving shrimp</p>
             </div>
+          </div>
+
+          <div className="flex gap-2 mt-6">
+            <Button onClick={handlePrint} variant="outline">
+              <Printer className="mr-2 h-4 w-4" />
+              Print Results
+            </Button>
+            <Button onClick={handleNext}>
+              Next: Feed Management
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           </div>
         </div>
       </CardContent>

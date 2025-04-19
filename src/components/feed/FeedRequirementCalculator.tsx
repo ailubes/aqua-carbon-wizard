@@ -1,15 +1,12 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useFeed } from "@/contexts/FeedContext";
-import { useGrowth } from "@/contexts/GrowthContext";
 
 const FeedRequirementCalculator = () => {
   const { totalBiomass, setTotalBiomass, fcr, setFcr, feedingPeriod, setFeedingPeriod, setTotalFeedRequired } = useFeed();
-  const { projectedWeight } = useGrowth();
   
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US', {
