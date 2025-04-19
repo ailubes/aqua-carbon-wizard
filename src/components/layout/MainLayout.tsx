@@ -8,7 +8,8 @@ import {
   Wind, 
   DollarSign, 
   Menu, 
-  X 
+  X,
+  TestTubeDiagonal  // Add this import for the new icon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -29,19 +30,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
   const navItems: NavItem[] = [
     {
-      name: "Water Quality",
-      path: "/water",
-      icon: Droplets,
-      active: location.pathname === "/water"
-    },
-    {
-      name: "Ammonia Reduction",
-      path: "/",
-      icon: Droplets,
-      currentModule: true,
-      active: location.pathname === "/"
-    },
-    {
       name: "Growth & Stocking",
       path: "/growth",
       icon: TrendingUp,
@@ -52,6 +40,19 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       path: "/feed",
       icon: Utensils,
       active: location.pathname === "/feed"
+    },
+    {
+      name: "Water Quality",
+      path: "/water",
+      icon: Droplets,
+      active: location.pathname === "/water"
+    },
+    {
+      name: "Ammonia Reduction",
+      path: "/",
+      icon: TestTubeDiagonal,  // Updated icon
+      currentModule: true,
+      active: location.pathname === "/"
     },
     {
       name: "Aeration & Environment",
