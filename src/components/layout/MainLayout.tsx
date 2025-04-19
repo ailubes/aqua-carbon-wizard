@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
@@ -9,7 +8,7 @@ import {
   DollarSign, 
   Menu, 
   X,
-  TestTubeDiagonal  // Add this import for the new icon
+  TestTubeDiagonal 
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -49,10 +48,9 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     },
     {
       name: "Ammonia Reduction",
-      path: "/",
-      icon: TestTubeDiagonal,  // Updated icon
-      currentModule: true,
-      active: location.pathname === "/"
+      path: "/ammonia",
+      icon: TestTubeDiagonal,
+      active: location.pathname === "/ammonia"
     },
     {
       name: "Aeration & Environment",
@@ -100,7 +98,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       </header>
 
       <div className="flex flex-1 w-full">
-        {/* Sidebar - Always visible on desktop, togglable on mobile */}
         <aside 
           className={cn(
             "bg-white shadow-md z-40 transition-all duration-300 ease-in-out",
@@ -145,12 +142,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           </nav>
         </aside>
 
-        {/* Main content */}
         <main className={cn(
           "flex-1 transition-all duration-300 ease-in-out",
           isMobile ? "w-full" : "ml-0"
         )}>
-          {/* Dark overlay when sidebar is open on mobile */}
           {isMobile && sidebarOpen && (
             <div 
               className="fixed inset-0 bg-black bg-opacity-50 z-30"
