@@ -90,18 +90,27 @@ const SurvivalCalculator = () => {
               <p className="text-sm text-gray-600 mt-1">Percentage of surviving shrimp</p>
             </div>
           </div>
+        </div>
 
-          <div className="flex gap-2 mt-6">
-            <Button onClick={handlePrint} variant="outline">
+        {harvestedTotal > 0 && (
+          <div className="flex flex-col md:flex-row gap-4 mt-6">
+            <Button 
+              onClick={handlePrint} 
+              variant="outline" 
+              className="w-full md:w-auto"
+            >
               <Printer className="mr-2 h-4 w-4" />
               Print Results
             </Button>
-            <Button onClick={handleNext}>
+            <Button 
+              onClick={handleNext} 
+              className="w-full md:w-auto"
+            >
               Next: Feed Management
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );
