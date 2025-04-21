@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Droplet, Info, Warning, CircleAlert } from "lucide-react";
+import { Droplet, Info, CircleAlert, AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 // Buffer compounds and factors
@@ -212,7 +212,7 @@ export default function AlkalinityAdjustmentCalculator() {
               </div>
               {isMinor && (
                 <div className="mt-2 text-yellow-700 font-semibold flex items-center gap-2">
-                  <Warning className="w-4 h-4" />
+                  <AlertTriangle className="w-4 h-4" />
                   Adjustment may be minor – test again in 24 hrs
                 </div>
               )}
@@ -252,3 +252,4 @@ export default function AlkalinityAdjustmentCalculator() {
     </Card>
   );
 }
+
