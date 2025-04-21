@@ -13,6 +13,8 @@ import FeedManagement from "./pages/FeedManagement";
 import WaterQuality from "./pages/WaterQuality";
 import AerationEnvironment from "./pages/AerationEnvironment";
 import EconomicTools from "./pages/EconomicTools";
+import WaterExchange from "./pages/WaterExchange";
+import AlkalinityAdjustment from "./pages/AlkalinityAdjustment";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +48,16 @@ const App = () => (
           <Route path="/water" element={
             <MainLayout>
               <WaterQuality />
+            </MainLayout>
+          } />
+          <Route path="/water/exchange" element={
+            <MainLayout>
+              <WaterExchange />
+            </MainLayout>
+          } />
+          <Route path="/water/alkalinity" element={
+            <MainLayout>
+              <AlkalinityAdjustment />
             </MainLayout>
           } />
           <Route path="/aeration" element={

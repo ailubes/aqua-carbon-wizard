@@ -15,7 +15,7 @@ interface FeedContextType {
 const FeedContext = createContext<FeedContextType>({
   totalBiomass: 0,
   setTotalBiomass: () => {},
-  fcr: 1.2,
+  fcr: 1.4, // Default FCR is now 1.4
   setFcr: () => {},
   feedingPeriod: 0,
   setFeedingPeriod: () => {},
@@ -29,7 +29,7 @@ export const FeedProvider = ({ children }: { children: React.ReactNode }) => {
   const initialFeedingPeriod = window.history.state?.usr?.feedingPeriod || 0;
 
   const [totalBiomass, setTotalBiomass] = useState(initialBiomass);
-  const [fcr, setFcr] = useState(1.2);
+  const [fcr, setFcr] = useState(1.4); // Default FCR = 1.4
   const [feedingPeriod, setFeedingPeriod] = useState(initialFeedingPeriod);
   const [totalFeedRequired, setTotalFeedRequired] = useState(0);
 
