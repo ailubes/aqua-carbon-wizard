@@ -1,14 +1,11 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Droplet, Info, CircleAlert, AlertTriangle } from "lucide-react";
+import { Droplet, Info, AlertTriangle } from "lucide-react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
-// Buffer compounds and factors
 const BUFFERS = [
   { label: "Calcium Carbonate (CaCO₃)", value: "CaCO3", factor: 1.0 },
   { label: "Sodium Bicarbonate (NaHCO₃)", value: "NaHCO3", factor: 1.68 },
@@ -16,16 +13,7 @@ const BUFFERS = [
   { label: "Calcium Oxide (CaO)", value: "CaO", factor: 0.56 }
 ];
 
-// Status logic
-const getAlkStatus = (alk: number) => {
-  if (alk < 60) return { emoji: "🔴", label: "Critical", color: "#ea384c", msg: "Urgent adjustment required", text: "white" };
-  if (alk < 80) return { emoji: "⚠️", label: "Low", color: "#FEF7CD", msg: "Recommended to adjust soon", text: "#ea384c" };
-  if (alk <= 160) return { emoji: "✅", label: "Optimal", color: "#F2FCE2", msg: "No adjustment needed", text: "#166534" };
-  if (alk > 200) return { emoji: "🟡", label: "High", color: "#fef08a", msg: "Risk of scaling, review necessity", text: "#92400e" };
-  return { emoji: "", label: "", color: "#F2FCE2", msg: "", text: "#166534" };
-};
-
-const DEFAULT_TARGET = 120; // mg/L
+const DEFAULT_TARGET = 120;
 
 export default function AlkalinityAdjustmentCalculator() {
   const [pondVolume, setPondVolume] = React.useState<string>("");
@@ -34,7 +22,6 @@ export default function AlkalinityAdjustmentCalculator() {
   const [targetAlk, setTargetAlk] = React.useState<string>(String(DEFAULT_TARGET));
   const [bufferType, setBufferType] = React.useState(BUFFERS[0].value);
 
-  // Calculations
   const volumeL = pondUnit === "L"
     ? parseFloat(pondVolume.replace(/,/g, "")) || 0
     : (parseFloat(pondVolume.replace(/,/g, "")) || 0) * 1000;
@@ -52,7 +39,6 @@ export default function AlkalinityAdjustmentCalculator() {
       ? `${(gramsNeeded / 1000).toFixed(2)} kg`
       : `${Math.round(gramsNeeded)} g`;
 
-  // Warnings/notes
   const currentStatus = getAlkStatus(current);
   const targetStatus = getAlkStatus(target);
 
@@ -66,7 +52,7 @@ export default function AlkalinityAdjustmentCalculator() {
     bufferType;
 
   const isMinor = alkDelta < 20 && alkDelta > 0;
-  const showCritical = current < 60;
+  const showCritical = current < 60 && currentAlk.trim() !== "";
   const showWarnTarget = target > 200;
   const showNoAdj = alkDelta <= 0;
 
@@ -82,7 +68,6 @@ export default function AlkalinityAdjustmentCalculator() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5 pt-6">
-        {/* Inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <div className="flex gap-2 items-end">
@@ -175,7 +160,6 @@ export default function AlkalinityAdjustmentCalculator() {
           </div>
         </div>
 
-        {/* Status */}
         <div>
           <div
             className="rounded p-4 mb-4"
@@ -194,7 +178,6 @@ export default function AlkalinityAdjustmentCalculator() {
           </div>
         </div>
 
-        {/* Main Output */}
         {valid && !showNoAdj && (
           <Card className="mt-1 border-2 border-vismar-green/60 bg-gradient-to-r from-vismar-green/10 to-vismar-blue/10">
             <CardContent className="p-4">
@@ -220,7 +203,6 @@ export default function AlkalinityAdjustmentCalculator() {
           </Card>
         )}
 
-        {/* Too low or no adjustment */}
         {valid && showNoAdj && (
           <Alert variant="default" className="border border-green-400 bg-green-50 mt-3">
             <AlertTitle className="font-bold">No Adjustment Needed</AlertTitle>
@@ -230,7 +212,6 @@ export default function AlkalinityAdjustmentCalculator() {
           </Alert>
         )}
 
-        {/* Critical or high warnings */}
         {valid && showCritical && (
           <Alert variant="destructive" className="mt-3">
             <AlertTitle>Critical Alkalinity!</AlertTitle>
@@ -252,4 +233,3 @@ export default function AlkalinityAdjustmentCalculator() {
     </Card>
   );
 }
-
