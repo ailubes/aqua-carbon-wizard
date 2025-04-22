@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,15 @@ const BUFFERS = [
   { label: "Calcium Hydroxide (Ca(OH)₂)", value: "CaOH2", factor: 0.74 },
   { label: "Calcium Oxide (CaO)", value: "CaO", factor: 0.56 }
 ];
+
+// Status logic for alkalinity levels
+const getAlkStatus = (alk: number) => {
+  if (alk < 60) return { emoji: "🔴", label: "Critical", color: "#ea384c", msg: "Urgent adjustment required", text: "white" };
+  if (alk < 80) return { emoji: "⚠️", label: "Low", color: "#FEF7CD", msg: "Recommended to adjust soon", text: "#ea384c" };
+  if (alk <= 160) return { emoji: "✅", label: "Optimal", color: "#F2FCE2", msg: "No adjustment needed", text: "#166534" };
+  if (alk > 200) return { emoji: "🟡", label: "High", color: "#fef08a", msg: "Risk of scaling, review necessity", text: "#92400e" };
+  return { emoji: "", label: "", color: "#F2FCE2", msg: "", text: "#166534" };
+};
 
 const DEFAULT_TARGET = 120;
 
