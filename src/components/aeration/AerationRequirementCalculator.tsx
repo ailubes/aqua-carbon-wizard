@@ -47,10 +47,14 @@ const AerationRequirementCalculator = () => {
               <Input
                 id="pondArea"
                 type="number"
-                value={pondArea}
-                onChange={(e) => setPondArea(Number(e.target.value))}
+                value={pondArea ?? ''}
+                onChange={(e) => {
+                  const value = e.target.value === '' ? undefined : Number(e.target.value);
+                  setPondArea(value);
+                }}
                 placeholder="Enter pond area"
                 className="flex-1"
+                min={0}
               />
               <Select value={areaUnit} onValueChange={(value: 'm2' | 'hectares' | 'acres') => setAreaUnit(value)}>
                 <SelectTrigger className="w-[120px]">
@@ -127,9 +131,13 @@ const AerationRequirementCalculator = () => {
             <Input
               id="installedAeration"
               type="number"
-              value={installedAeration}
-              onChange={(e) => setInstalledAeration(Number(e.target.value))}
+              value={installedAeration ?? ''}
+              onChange={(e) => {
+                const value = e.target.value === '' ? undefined : Number(e.target.value);
+                setInstalledAeration(value);
+              }}
               placeholder="Optional"
+              min={0}
             />
           </div>
         </div>

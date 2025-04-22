@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from 'react';
 
 export type AerationType = 'paddlewheel' | 'venturi' | 'diffuser' | 'mixed';
@@ -26,13 +27,23 @@ const convertToSquareMeters = (value: number, fromUnit: AreaUnit): number => {
 };
 
 export function useAerationCalculator() {
-  const [pondArea, setPondArea] = useState<number>(0);
+  const [pondArea, setPondArea] = useState<number | undefined>(undefined);
   const [areaUnit, setAreaUnit] = useState<AreaUnit>('m2');
   const [stockingDensity, setStockingDensity] = useState<number>(25);
   const [survivalRate, setSurvivalRate] = useState<number>(80);
   const [avgWeight, setAvgWeight] = useState<number>(25);
   const [aerationType, setAerationType] = useState<AerationType>('paddlewheel');
-  const [installedAeration, setInstalledAeration] = useState<number>(0);
+  const [installedAeration, setInstalledAeration] = useState<number | undefined>(undefined);
+
+  const safeSetPondArea = (value: number | undefined) => {
+    if (value !== undefined && value < 0) return;
+    setPondArea(value);
+  };
+
+  const safeSetInstalledAeration = (value: number | undefined) => {
+    if (value !== undefined && value < 0) return;
+    setInstalledAeration(value);
+  };
 
   const calculations = useMemo<Calculations | null>(() => {
     if (!pondArea) {
@@ -65,7 +76,7 @@ export function useAerationCalculator() {
 
   return {
     pondArea,
-    setPondArea,
+    setPondArea: safeSetPondArea,
     areaUnit,
     setAreaUnit,
     stockingDensity,
@@ -77,7 +88,7 @@ export function useAerationCalculator() {
     aerationType,
     setAerationType,
     installedAeration,
-    setInstalledAeration,
+    setInstalledAeration: safeSetInstalledAeration,
     calculations,
     aerationStatus,
   };
