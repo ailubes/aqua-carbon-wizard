@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { useAerationCalculator } from "@/hooks/useAerationCalculator";
+import { useAerationCalculator, AerationType } from "@/hooks/useAerationCalculator";
 
 const AerationRequirementCalculator = () => {
   const {

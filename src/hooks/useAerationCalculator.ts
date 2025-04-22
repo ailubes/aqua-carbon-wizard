@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 
-type AerationType = 'paddlewheel' | 'venturi' | 'diffuser' | 'mixed';
-type AreaUnit = 'm2' | 'hectares' | 'acres';
+export type AerationType = 'paddlewheel' | 'venturi' | 'diffuser' | 'mixed';
+export type AreaUnit = 'm2' | 'hectares' | 'acres';
 
 interface Calculations {
   totalShrimp: number;
