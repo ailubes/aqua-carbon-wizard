@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,8 @@ const AerationRequirementCalculator = () => {
   const {
     pondArea,
     setPondArea,
+    areaUnit,
+    setAreaUnit,
     stockingDensity,
     setStockingDensity,
     survivalRate,
@@ -40,14 +41,27 @@ const AerationRequirementCalculator = () => {
       <CardContent className="space-y-6 pt-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="pondArea">Pond Area (m²)</Label>
-            <Input
-              id="pondArea"
-              type="number"
-              value={pondArea}
-              onChange={(e) => setPondArea(Number(e.target.value))}
-              placeholder="Enter pond area"
-            />
+            <Label htmlFor="pondArea">Pond Area</Label>
+            <div className="flex gap-2">
+              <Input
+                id="pondArea"
+                type="number"
+                value={pondArea}
+                onChange={(e) => setPondArea(Number(e.target.value))}
+                placeholder="Enter pond area"
+                className="flex-1"
+              />
+              <Select value={areaUnit} onValueChange={(value: 'm2' | 'hectares' | 'acres') => setAreaUnit(value)}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Unit" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="m2">m²</SelectItem>
+                  <SelectItem value="hectares">hectares</SelectItem>
+                  <SelectItem value="acres">acres</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="space-y-2">
