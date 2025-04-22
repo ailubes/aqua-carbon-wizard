@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -63,6 +64,9 @@ export default function AlkalinityAdjustmentCalculator() {
   const showCritical = current < 60 && currentAlk.trim() !== "";
   const showWarnTarget = target > 200;
   const showNoAdj = alkDelta <= 0;
+  
+  // Determine if we should show the status box at all
+  const hasCurrentAlk = currentAlk.trim() !== "";
 
   return (
     <Card className="border-2 border-vismar-green/20">
@@ -168,23 +172,25 @@ export default function AlkalinityAdjustmentCalculator() {
           </div>
         </div>
 
-        <div>
-          <div
-            className="rounded p-4 mb-4"
-            style={{
-              background: currentStatus.color,
-              color: currentStatus.text,
-            }}
-          >
-            <div className="flex items-center gap-2 mb-1">
-              {currentStatus.emoji && <span>{currentStatus.emoji}</span>}
-              <span className="font-semibold">
-                Current Alkalinity: {currentAlk || "—"} mg/L ({currentStatus.label})
-              </span>
+        {hasCurrentAlk && (
+          <div>
+            <div
+              className="rounded p-4 mb-4"
+              style={{
+                background: currentStatus.color,
+                color: currentStatus.text,
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                {currentStatus.emoji && <span>{currentStatus.emoji}</span>}
+                <span className="font-semibold">
+                  Current Alkalinity: {currentAlk || "—"} mg/L ({currentStatus.label})
+                </span>
+              </div>
+              <div className="ml-6 text-sm">{currentStatus.msg}</div>
             </div>
-            <div className="ml-6 text-sm">{currentStatus.msg}</div>
           </div>
-        </div>
+        )}
 
         {valid && !showNoAdj && (
           <Card className="mt-1 border-2 border-vismar-green/60 bg-gradient-to-r from-vismar-green/10 to-vismar-blue/10">
