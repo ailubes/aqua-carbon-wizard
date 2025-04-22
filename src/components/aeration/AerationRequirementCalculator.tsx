@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -105,7 +106,10 @@ const AerationRequirementCalculator = () => {
 
           <div className="space-y-2">
             <Label htmlFor="aerationType">Aeration System Type</Label>
-            <Select value={aerationType} onValueChange={setAerationType}>
+            <Select 
+              value={aerationType} 
+              onValueChange={(value: string) => setAerationType(value as AerationType)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select aeration type" />
               </SelectTrigger>
