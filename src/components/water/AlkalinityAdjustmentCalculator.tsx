@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,6 @@ const BUFFERS = [
   { label: "Calcium Oxide (CaO)", value: "CaO", factor: 0.56 }
 ];
 
-// Status logic for alkalinity levels
 const getAlkStatus = (alk: number) => {
   if (alk < 60) return { emoji: "🔴", label: "Critical", color: "#ea384c", msg: "Urgent adjustment required", text: "white" };
   if (alk < 80) return { emoji: "⚠️", label: "Low", color: "#FEF7CD", msg: "Recommended to adjust soon", text: "#ea384c" };
