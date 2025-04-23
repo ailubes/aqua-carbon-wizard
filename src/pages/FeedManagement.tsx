@@ -1,21 +1,33 @@
-
 import React from "react";
 import FeedRequirementCalculator from "@/components/feed/FeedRequirementCalculator";
 import FeedCostAnalyzer from "@/components/feed/FeedCostAnalyzer";
 import { FeedProvider, useFeed } from "@/contexts/FeedContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const FeedManagementContent = () => {
-  const { totalBiomass, feedingPeriod } = useFeed();
+  const { totalBiomass, setTotalBiomass, feedingPeriod, setFeedingPeriod } = useFeed();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (location.state) {
+      const { biomass, daysOfCulture, plCount } = location.state;
+      if (biomass && (!totalBiomass || totalBiomass === 0)) {
+        setTotalBiomass(Number(biomass));
+      }
+      if (daysOfCulture && (!feedingPeriod || feedingPeriod === 0)) {
+        setFeedingPeriod(Number(daysOfCulture));
+      }
+    }
+  }, [location.state, setTotalBiomass, setFeedingPeriod, totalBiomass, feedingPeriod]);
 
   const handleNext = () => {
-    // Forward calculated values to Water Quality section
-    navigate("/water", {
+    navigate("/aeration", {
       state: {
         biomass: totalBiomass,
-        feedingPeriod: feedingPeriod,
+        feedingPeriod,
+        ...(location.state ? location.state : {}),
       },
     });
   };
@@ -30,14 +42,13 @@ const FeedManagementContent = () => {
           Tools to optimize feed usage and analyze feeding costs
         </p>
       </header>
-
       <div className="grid grid-cols-1 gap-6 w-full max-w-7xl print:!grid-cols-1 print:gap-8">
         <FeedRequirementCalculator />
         <FeedCostAnalyzer />
       </div>
       <div className="w-full max-w-7xl flex justify-end mt-8">
         <Button variant="default" onClick={handleNext}>
-          Next: Water Quality
+          Next: Aeration & Environment
         </Button>
       </div>
     </div>
