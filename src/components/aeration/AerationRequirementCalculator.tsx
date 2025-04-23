@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -28,6 +27,24 @@ const AerationRequirementCalculator = () => {
     calculations,
     aerationStatus,
   } = useAerationCalculator();
+
+  // --- BEGIN new computations for insufficient aeration ---
+  // These calculations are only done when needed; values null unless calculations/install present
+  let aerationDeficitKw: number | null = null;
+  let aerationDeficitHp: number | null = null;
+  let paddlewheelsNeeded: number | null = null;
+
+  if (
+    calculations &&
+    typeof calculations.requiredKw === "number" &&
+    typeof installedAeration === "number" &&
+    installedAeration < calculations.requiredKw
+  ) {
+    aerationDeficitKw = calculations.requiredKw - installedAeration;
+    aerationDeficitHp = aerationDeficitKw * 1.34;
+    paddlewheelsNeeded = Math.ceil(aerationDeficitHp / 1.5);
+  }
+  // --- END new computations ---
 
   return (
     <Card className="border-2 border-vismar-green/20">
@@ -192,7 +209,20 @@ const AerationRequirementCalculator = () => {
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Insufficient Aeration</AlertTitle>
                 <AlertDescription>
-                  Current aeration may be inadequate for projected biomass. Consider increasing power or splitting biomass into multiple ponds.
+                  Current aeration may be inadequate for projected biomass.<br />
+                  Consider increasing power
+                  {aerationDeficitKw !== null && aerationDeficitHp !== null && paddlewheelsNeeded !== null ? (
+                    <>
+                      {" by "}
+                      <b>{aerationDeficitKw.toFixed(1)} kW</b> (
+                      <b>{aerationDeficitHp.toFixed(1)} HP</b>
+                      ), which is equivalent to adding{" "}
+                      <b>{paddlewheelsNeeded}</b> paddlewheels {"("}1.5 HP each{")"}.
+                    </>
+                  ) : (
+                    <>.</>
+                  )}{" "}
+                  Alternatively, consider splitting biomass into multiple ponds.
                 </AlertDescription>
               </Alert>
             )}
