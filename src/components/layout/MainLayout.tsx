@@ -82,7 +82,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             />
           </a>
           <h1 className="text-xl md:text-2xl font-bold text-vismar-blue ml-4 hidden md:block">
-            Vismar Aqua Tools
+            Smarter Shrimp Farming with AquaSila
           </h1>
         </div>
         

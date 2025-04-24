@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { 
   Card, 
@@ -51,7 +50,7 @@ const PostlarvaeCostInput = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="pl-price">Price per 1,000 PL</Label>
+          <Label htmlFor="pl-price">PL Price (per 1,000)</Label>
           <Input
             id="pl-price"
             type="text"
@@ -101,9 +100,13 @@ const FeedCostInput = () => {
           <Label htmlFor="feed-price">Feed Price (per kg)</Label>
           <Input
             id="feed-price"
-            type="text"
-            value={feedUnitPrice > 0 ? formatNumber(feedUnitPrice) : ''}
-            onChange={(e) => setFeedUnitPrice(parseFloat(e.target.value.replace(/,/g, '')) || 0)}
+            type="number"
+            step="any" // Allows any decimal input
+            // Use the raw numeric value for type="number". Handle potential display of 0.
+            value={feedUnitPrice === 0 ? '' : feedUnitPrice}
+            // Parse the value directly for type="number"
+            onChange={(e) => setFeedUnitPrice(parseFloat(e.target.value) || 0)}
+            placeholder="e.g., 1.25" // Add placeholder for clarity
           />
         </div>
       </div>

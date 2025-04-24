@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Smarter Shrimp Farming with AquaSila
 
 ## Project info
 
