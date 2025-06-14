@@ -1,3 +1,4 @@
+
 import React from "react";
 import PondSizeCalculator from "@/components/growth/PondSizeCalculator";
 import StockingCalculator from "@/components/growth/StockingCalculator";
@@ -40,7 +41,7 @@ const GrowthStockingContent = () => {
         <div className="print:hidden">
           <PondSizeCalculator />
           <StockingCalculator />
-          <GrowthCalculator />
+          <GrowthCalculator onDaysChange={setDaysOfCulture} />
           <SurvivalCalculator />
         </div>
         <div className="hidden print:block">
@@ -48,8 +49,17 @@ const GrowthStockingContent = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-7xl flex justify-end mt-8">
-        <Button variant="default" onClick={handleNext}>
+      <div className="w-full max-w-7xl flex justify-between items-center mt-8">
+        <div className="text-sm text-gray-600">
+          {totalPL > 0 && projectedWeight > 0 && daysOfCulture > 0 && (
+            <span>Ready: {totalPL.toLocaleString()} PL, {projectedWeight.toFixed(1)}g target weight, {daysOfCulture} days</span>
+          )}
+        </div>
+        <Button 
+          variant="default" 
+          onClick={handleNext}
+          disabled={!totalPL || !projectedWeight || !daysOfCulture}
+        >
           Next: Feed Management
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>

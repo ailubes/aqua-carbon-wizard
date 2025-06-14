@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,16 @@ const FeedRequirementCalculator = () => {
 
   const dailyFeed = feedingPeriod > 0 ? (totalBiomass * fcr) / feedingPeriod : 0;
 
+  const handleBiomassChange = (value: string) => {
+    const numValue = parseFloat(value.replace(/,/g, '')) || 0;
+    setTotalBiomass(numValue);
+  };
+
+  const handleFeedingPeriodChange = (value: string) => {
+    const numValue = parseFloat(value.replace(/,/g, '')) || 0;
+    setFeedingPeriod(numValue);
+  };
+
   return (
     <Card className="border-2 border-vismar-green/20 print:shadow-none">
       <CardHeader className="bg-gradient-to-r from-vismar-green/10 to-vismar-blue/10">
@@ -34,7 +45,7 @@ const FeedRequirementCalculator = () => {
             <Input
               type="text"
               value={totalBiomass > 0 ? formatNumber(totalBiomass) : ''}
-              onChange={(e) => setTotalBiomass(parseFloat(e.target.value.replace(/,/g, '')) || 0)}
+              onChange={(e) => handleBiomassChange(e.target.value)}
               placeholder="Enter biomass"
             />
           </div>
@@ -60,7 +71,7 @@ const FeedRequirementCalculator = () => {
             <Input
               type="text"
               value={feedingPeriod > 0 ? formatNumber(feedingPeriod) : ''}
-              onChange={(e) => setFeedingPeriod(parseFloat(e.target.value.replace(/,/g, '')) || 0)}
+              onChange={(e) => handleFeedingPeriodChange(e.target.value)}
               placeholder="Enter days"
             />
           </div>

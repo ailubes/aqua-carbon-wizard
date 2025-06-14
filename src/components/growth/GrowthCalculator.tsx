@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -7,13 +8,13 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { plStages } from "@/data/plStages";
 import { geneticLines } from "@/data/geneticLines";
 import { useGrowth } from "@/contexts/GrowthContext";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 
-const GrowthCalculator = () => {
+interface GrowthCalculatorProps {
+  onDaysChange?: (days: number) => void;
+}
+
+const GrowthCalculator: React.FC<GrowthCalculatorProps> = ({ onDaysChange }) => {
   const { setProjectedWeight } = useGrowth();
-  const navigate = useNavigate();
   const [plStage, setPlStage] = React.useState('');
   const [days, setDays] = React.useState(0);
   const [geneticLine, setGeneticLine] = React.useState('');
@@ -37,6 +38,17 @@ const GrowthCalculator = () => {
     }
   }, [plStage, days, geneticLine, setProjectedWeight]);
 
+  React.useEffect(() => {
+    if (onDaysChange && days > 0) {
+      onDaysChange(days);
+    }
+  }, [days, onDaysChange]);
+
+  const handleDaysChange = (value: string) => {
+    const numValue = parseFloat(value.replace(/,/g, '')) || 0;
+    setDays(numValue);
+  };
+
   const generateGrowthData = () => {
     const selectedPL = plStages.find(pl => pl.stage === plStage);
     const selectedLine = geneticLines.find(line => line.name === geneticLine);
@@ -57,10 +69,6 @@ const GrowthCalculator = () => {
       });
     }
     return data;
-  };
-
-  const handleUseFeedManagement = () => {
-    navigate('/feed');
   };
 
   return (
@@ -92,7 +100,7 @@ const GrowthCalculator = () => {
               id="days"
               type="text"
               value={days > 0 ? formatNumber(days) : ''}
-              onChange={(e) => setDays(parseFloat(e.target.value.replace(/,/g, '')) || 0)}
+              onChange={(e) => handleDaysChange(e.target.value)}
               placeholder="Enter days"
             />
           </div>
@@ -123,16 +131,6 @@ const GrowthCalculator = () => {
             Expected weight after {formatNumber(days)} days
           </p>
         </div>
-
-        {finalWeight > 0 && (
-          <Button
-            onClick={handleUseFeedManagement}
-            className="mt-4 w-full md:w-auto"
-          >
-            Use in Feed Management
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        )}
 
         {days > 0 && finalWeight > 0 && (
           <div className="mt-6 h-[300px]">

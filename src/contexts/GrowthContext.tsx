@@ -8,6 +8,9 @@ interface GrowthContextType {
   setTotalPL: (pl: number) => void;
   projectedWeight: number;
   setProjectedWeight: (weight: number) => void;
+  biomass: number;
+  survivalRate: number;
+  setSurvivalRate: (rate: number) => void;
 }
 
 const GrowthContext = createContext<GrowthContextType>({
@@ -17,12 +20,19 @@ const GrowthContext = createContext<GrowthContextType>({
   setTotalPL: () => {},
   projectedWeight: 0,
   setProjectedWeight: () => {},
+  biomass: 0,
+  survivalRate: 80,
+  setSurvivalRate: () => {},
 });
 
 export const GrowthProvider = ({ children }: { children: React.ReactNode }) => {
   const [pondSize, setPondSize] = useState(0);
   const [totalPL, setTotalPL] = useState(0);
   const [projectedWeight, setProjectedWeight] = useState(0);
+  const [survivalRate, setSurvivalRate] = useState(80);
+
+  // Calculate biomass based on survival rate and projected weight
+  const biomass = (totalPL * (survivalRate / 100) * projectedWeight) / 1000; // Convert to kg
 
   return (
     <GrowthContext.Provider 
@@ -32,7 +42,10 @@ export const GrowthProvider = ({ children }: { children: React.ReactNode }) => {
         totalPL, 
         setTotalPL,
         projectedWeight,
-        setProjectedWeight
+        setProjectedWeight,
+        biomass,
+        survivalRate,
+        setSurvivalRate
       }}
     >
       {children}
