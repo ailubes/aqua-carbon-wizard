@@ -12,9 +12,12 @@ import {
   DollarSign,
   TestTubeDiagonal,
   Wind,
-  Calculator as CalcIcon,
+  Droplets,
   Activity,
-  Droplets
+  Beaker,
+  BarChart3,
+  Calendar,
+  Smartphone
 } from "lucide-react";
 
 const Home = () => {
@@ -88,48 +91,89 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Tools Overview Section */}
+      {/* Available Tools Section */}
       <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-vismar-blue mb-12">
-            📊 Included Calculators & Tools
+            📊 Available Calculators & Tools
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <ToolCard 
               icon={CalculatorIcon}
-              title="Stocking Density Calculator"
-              description="Calculate how many PLs (postlarvae) you can safely stock based on your pond or tank size."
+              title="Pond Size & Stocking Calculator"
+              description="Calculate optimal pond dimensions and how many PLs (postlarvae) you can safely stock."
               link="/growth"
+              status="available"
             />
             <ToolCard 
               icon={TrendingUp}
               title="Growth Projection Tool"
               description="Estimate shrimp weight gain over time using Average Daily Growth (ADG), genetics, and survival assumptions."
               link="/growth"
+              status="available"
             />
             <ToolCard 
               icon={HeartPulse}
-              title="Survival Rate Estimator"
-              description="Quickly evaluate your actual survival percentage after a harvest — compare expected vs real-world performance."
+              title="Survival Rate Calculator"
+              description="Evaluate your actual survival percentage and biomass projections for harvest planning."
               link="/growth"
+              status="available"
             />
             <ToolCard 
               icon={Utensils}
               title="Feed Requirement Calculator"
               description="Calculate how much feed your shrimp will need based on biomass, FCR, and culture duration."
               link="/feed"
+              status="available"
             />
             <ToolCard 
               icon={DollarSign}
               title="Feed Cost Analyzer"
               description="Estimate total feed costs using current market prices — plan your budget and compare feed types."
               link="/feed"
+              status="available"
             />
             <ToolCard 
               icon={TestTubeDiagonal}
               title="Ammonia Reduction Calculator"
               description="Determine how much organic carbon you need to reduce ammonia in your biofloc or RAS system."
-              link="/"
+              link="/ammonia"
+              status="available"
+            />
+            <ToolCard 
+              icon={Wind}
+              title="Aeration Requirement Calculator"
+              description="Calculate oxygen needs and aeration requirements based on biomass and water conditions."
+              link="/aeration"
+              status="available"
+            />
+            <ToolCard 
+              icon={Droplets}
+              title="Evaporation Loss Estimator"
+              description="Estimate daily water loss due to evaporation and plan your water management strategy."
+              link="/aeration"
+              status="available"
+            />
+            <ToolCard 
+              icon={BarChart3}
+              title="Cost of Production Calculator"
+              description="Calculate total production costs including PL, feed, energy, labor, and other operational expenses."
+              link="/economic"
+              status="available"
+            />
+            <ToolCard 
+              icon={Beaker}
+              title="Water Exchange Calculator"
+              description="Determine optimal water exchange rates and volumes for maintaining water quality."
+              link="/water/exchange"
+              status="available"
+            />
+            <ToolCard 
+              icon={Activity}
+              title="Alkalinity Adjustment"
+              description="Calculate lime requirements to maintain optimal alkalinity levels in your pond."
+              link="/water/alkalinity"
+              status="available"
             />
           </div>
         </div>
@@ -138,28 +182,50 @@ const Home = () => {
       {/* Coming Soon Section */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-vismar-blue mb-12">
-            More Tools Coming Soon
+          <h2 className="text-3xl md:text-4xl font-bold text-vismar-blue mb-8">
+            🚀 More Tools Coming Soon
           </h2>
+          <p className="text-lg text-gray-600 mb-12">
+            We're continuously developing new tools to support your aquaculture operations
+          </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <ComingSoonCard 
-              icon={Wind}
-              title="Aeration and oxygen budgeting"
+              icon={Calendar}
+              title="Harvest Planning & Profitability Forecast"
+              description="Predict optimal harvest timing and profitability scenarios"
             />
             <ComingSoonCard 
-              icon={CalcIcon}
-              title="Harvest planning & profitability forecast"
+              icon={Smartphone}
+              title="Shrimp Health Logs & Feeding Schedules"
+              description="Track daily observations and feeding regimens"
             />
             <ComingSoonCard 
-              icon={Droplets}
-              title="Water exchange and alkalinity corrections"
+              icon={BarChart3}
+              title="Multi-Pond Management Dashboard"
+              description="Manage multiple ponds and compare performance"
             />
             <ComingSoonCard 
-              icon={Activity}
-              title="Shrimp health logs and feeding schedules"
+              icon={TrendingUp}
+              title="Historical Batch Analysis"
+              description="Compare past cycles and identify improvement areas"
             />
           </div>
-          <p className="mt-12 text-xl text-gray-600">
+          <div className="mt-12 p-6 bg-blue-50 rounded-xl max-w-2xl mx-auto">
+            <h3 className="text-xl font-semibold text-vismar-blue mb-3">Want to suggest a feature?</h3>
+            <p className="text-gray-600 mb-4">
+              Have an idea for a calculator that would help your farming operation? We'd love to hear from you.
+            </p>
+            <Button variant="outline" asChild>
+              <a 
+                href="https://www.vismar-aqua.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                Contact Us
+              </a>
+            </Button>
+          </div>
+          <p className="mt-12 text-xl text-gray-600 font-medium">
             You grow — we grow with you.
           </p>
         </div>
@@ -173,18 +239,27 @@ const ToolCard = ({
   icon: Icon, 
   title, 
   description, 
-  link 
+  link,
+  status = "available"
 }: { 
   icon: React.ComponentType<any>;
   title: string;
   description: string;
   link: string;
+  status?: "available" | "coming-soon";
 }) => (
   <Link 
     to={link}
-    className="block p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
+    className="block p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100"
   >
-    <Icon className="w-8 h-8 text-vismar-blue mb-4" />
+    <div className="flex items-start justify-between mb-4">
+      <Icon className="w-8 h-8 text-vismar-blue" />
+      {status === "available" && (
+        <span className="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full">
+          Available
+        </span>
+      )}
+    </div>
     <h3 className="text-xl font-semibold text-gray-800 mb-3">{title}</h3>
     <p className="text-gray-600">{description}</p>
   </Link>
@@ -193,14 +268,22 @@ const ToolCard = ({
 // Coming Soon Card Component
 const ComingSoonCard = ({ 
   icon: Icon, 
-  title 
+  title,
+  description
 }: { 
   icon: React.ComponentType<any>;
   title: string;
+  description: string;
 }) => (
   <div className="p-6 bg-gray-50 rounded-xl border border-gray-100">
     <Icon className="w-8 h-8 text-gray-400 mb-4 mx-auto" />
-    <h3 className="text-lg font-medium text-gray-600">{title}</h3>
+    <h3 className="text-lg font-medium text-gray-800 mb-3">{title}</h3>
+    <p className="text-sm text-gray-600">{description}</p>
+    <div className="mt-4">
+      <span className="bg-gray-200 text-gray-600 text-xs font-medium px-2 py-1 rounded-full">
+        Coming Soon
+      </span>
+    </div>
   </div>
 );
 
